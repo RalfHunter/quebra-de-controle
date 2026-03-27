@@ -1,6 +1,8 @@
 import UserRepository from "../repositories/UserRepository.ts";
+import { AppError } from "../utils/appError.ts";
+import type { TypeLogin } from "../utils/validatores/schemas/zod/AuthSchema.ts";
 import type { TypeUser, TypeUserUpdate } from "../utils/validatores/schemas/zod/UserSchema.ts";
-
+import bcrypt from "bcrypt"
 class UserService {
     private userRepository: UserRepository
     constructor() {
@@ -58,6 +60,8 @@ class UserService {
 
         return data
     }
+
+
 }
 
 export default UserService

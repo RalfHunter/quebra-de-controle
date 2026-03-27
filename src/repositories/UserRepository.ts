@@ -1,10 +1,12 @@
 
 import { UserID } from "../models/UserID.ts";
-
+import bcrypt from "bcrypt"
 import db from "../../config/DbConfig.ts";
 import type { TypeUser, TypeUserID, TypeUserUpdate, TypeUserUUID } from "../utils/validatores/schemas/zod/UserSchema.ts";
 import { UserUUID } from "../models/UserUUID.ts";
 import { eq } from "drizzle-orm";
+import type { TypeLogin } from "../utils/validatores/schemas/zod/AuthSchema.ts";
+import { email } from "zod";
 
 class UserRepository {
 
@@ -72,6 +74,11 @@ class UserRepository {
     return deleted
   }
 
+  async findForEmailAndPassword (email:string) {
+    const data = await db.select({email: UserUUID.email, password: UserUUID.password}).from(UserUUID).where(eq(UserUUID.email, email))
+
+    return data[0]
+  }
 
 }
 
