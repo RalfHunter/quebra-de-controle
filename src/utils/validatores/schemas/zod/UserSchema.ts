@@ -4,8 +4,9 @@ import parsePhoneNumberFromString from "libphonenumber-js";
 
 const nameRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
 
-export const UserSchema = z.object({
-    user: z.string({ error: "Nome é obrigatório" }),
+export const UserSchemaUUID = z.object({
+    id: z.uuid({error:"ID inválido"}).optional(),
+    sex: z.enum(["male", "female"], {error:"Sexo inválido, somente male e female são permitidos"}),
     email: z.email({ error: "Email não é válido" }),
     password: z.string({error:"A senha não é uma string válida"})
     .min(8, "A senha deve ter no mínimo 8 caracteres")
@@ -36,3 +37,20 @@ export const UserSchema = z.object({
         return undefined
     }, z.string({error:"Numero te telefono inválido"}))
 })
+
+export const UserSchemaID = UserSchemaUUID.extend({id: z.coerce.number({error:"ID não é um número válido"}).int({error:"ID dev ser um número inteiro."}).positive({error:"ID deve ser um numero positivo."}).optional()})
+
+export const User = UserSchemaUUID.omit({id:true})
+
+export const UserUpdate = User.pick({phone:true})
+
+export const UserUpdateUUIDParam = UserSchemaID.pick({id:true}).extend({id: z.uuid({error:"ID inválido"})})
+
+export const UserUpdateIDParam = UserSchemaID.pick({id:true}).extend({id: z.coerce.number({error:"ID não é um número válido"}).int({error:"ID dev ser um número inteiro."}).positive({error:"ID deve ser um numero positivo."})})
+
+
+
+export type TypeUserUpdate = z.infer<typeof UserUpdate>
+export type TypeUserUUID  = z.infer<typeof UserSchemaUUID>
+export type TypeUserID = z.infer<typeof UserSchemaID>
+export type TypeUser = z.infer<typeof User>
