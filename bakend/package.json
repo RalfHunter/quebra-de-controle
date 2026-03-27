@@ -4,8 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "dev":"tsx watch server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx drizzle-kit push",
+    "push": "npx drizzle-kit push",
     "seed:users": "tsx src/seeds/userSeed.ts"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.100.1",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
     "cpf-cnpj-validator": "^1.0.3",
     "crypto": "^1.0.1",
     "dotenv": "^17.3.1",
@@ -27,7 +29,9 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
     "tsx": "^4.21.0"

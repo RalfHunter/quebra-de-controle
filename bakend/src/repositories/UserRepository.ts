@@ -75,7 +75,7 @@ class UserRepository {
   }
 
   async findForEmailAndPassword (email:string) {
-    const data = await db.select({email: UserUUID.email, password: UserUUID.password}).from(UserUUID).where(eq(UserUUID.email, email))
+    const data = await db.select({email: UserUUID.email, password: UserUUID.password, id: UserUUID.id}).from(UserUUID).where(eq(UserUUID.email, email))
 
     return data[0]
   }

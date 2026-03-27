@@ -9,11 +9,12 @@ import { UserUUID } from "../models/UserUUID.ts"
 type BaseUser = {
   name: string
   email: string
-  sex: "male" | "female"
+  sex: "male" | "female",
+  role?: string
 }
 
 const baseUsers: BaseUser[] = [
-  { name: "Administrador", email: "admin@gmail.com", sex: "male" },
+  { name: "Administrador", email: "admin@gmail.com", sex: "male", role:"admin" },
   { name: "Amanda", email: "amanda@gmail.com", sex: "female" },
   { name: "Bruno", email: "bruno@gmail.com", sex: "male" },
   { name: "Carlos", email: "carlos@gmail.com", sex: "male" }

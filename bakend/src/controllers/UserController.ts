@@ -14,14 +14,22 @@ class UserController {
 
         try {
             const id = req.params.id
-            const parsedId = UserSchemaUUID.pick({ id: true }).safeParse(id)
 
-            if (!parsedId.success) {
-                return res.status(400).json(errorResponse(parsedId.error.issues.map(e => e.message).join(", "), 400))
+            if (id) {
+                const parsedId = UserSchemaUUID.pick({ id: true }).safeParse(id)
+
+                if (!parsedId.success) {
+                    return res.status(400).json(errorResponse(parsedId.error.issues.map(e => e.message).join(", "), 400))
+                }
+                const data = await this.userService.listUserSecurity(parsedId.data.id)
+
+                return data
             }
-            const data = await this.userService.listUserSecurity(parsedId.data.id)
+            
+            const data = await this.userService.listUserSecurity()
+            
+            res.status(200).json(successResponse(data))
 
-            return data
         }
         catch (error: any) {
             if (error instanceof AppError) {

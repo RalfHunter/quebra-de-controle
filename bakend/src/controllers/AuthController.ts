@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { Login } from "../utils/validatores/schemas/zod/AuthSchema.ts";
 import { errorResponse, successResponse } from "../utils/response.ts";
 import AuthService from "../services/AuthService.ts";
-
+import { AppError } from "../utils/appError.ts";
 class AuthController {
     private authService:AuthService
 
@@ -27,7 +27,11 @@ class AuthController {
             res.status(200).json(successResponse(data))
 
         } catch (error:any) {
-
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json(errorResponse(error.message, error.statusCode))
+            }
+            console.log(error)
+            res.status(500).json(errorResponse('Erro interno no servidor', 500))
         }
 
     }
@@ -36,3 +40,5 @@ class AuthController {
 
     }
 }
+
+export default AuthController
