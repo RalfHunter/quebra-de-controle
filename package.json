@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx drizzle-kit push"
+    "dev": "npx drizzle-kit push",
+    "seed:users": "tsx src/seeds/userSeed.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "libphonenumber-js": "^1.12.40",
     "pg": "^8.20.0",
     "zod": "^4.3.6"
