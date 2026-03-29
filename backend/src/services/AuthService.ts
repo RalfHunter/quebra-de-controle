@@ -1,0 +1,49 @@
+import type { TypeLogin } from "../utils/validatores/schemas/zod/AuthSchema.ts"
+import bcrypt from "bcrypt"
+import UserRepository from "../repositories/UserRepository.ts"
+import { AppError } from "../utils/appError.ts"
+import jwt from "jsonwebtoken"
+import type { StringValue } from "ms"
+import "dotenv"
+const EXPIRES_ACCESS = process.env.EXPIRES_ACCESS as StringValue
+
+class AuthService {
+
+    private userRepository: UserRepository
+
+    constructor() {
+        this.userRepository = new UserRepository()
+    }
+
+    async login(login: TypeLogin) {
+
+        const data = await this.userRepository.findForEmailAndPassword(login.email)
+        if (!data) {
+            throw new AppError(`Email ou senha incorretos`, 404)
+        }
+
+        const senha = bcrypt.compare(login.password, data.password)
+        if (!senha) {
+            throw new AppError(`Email ou senha incorretos`, 404)
+        }
+
+        const token = await new Promise((resolve, reject) => {
+            let Token: string | undefined 
+            jwt.sign({ id: data.id as string }, process.env.ACCESS_TOKEN as string, { expiresIn: EXPIRES_ACCESS }, (err, token) => {
+                if (err) {
+                    throw new AppError(`Erro ao gerar token`, 500)
+                }
+                resolve(token)
+            })
+
+        })
+        const body = {
+            id: data.id,
+            access_token: token
+        }
+
+        return body
+    }
+}
+
+export default AuthService
