@@ -80,6 +80,12 @@ class UserRepository {
     return data[0]
   }
 
+  async findForUUID(id:string) {
+    const data = await db.select().from(UserUUID).where(eq(UserUUID.id, id))
+
+    return data
+  } 
+
 }
 
 export default UserRepository

@@ -21,6 +21,12 @@ const routesToCreate = [
     method: "GET",
     route_path: "/security/users/:id",
     resource: "users"
+  },
+  {
+    name:"Obter informações do usuário",
+    method:"GET",
+    route_path:"/security/me",
+    resource:"perfil"
   }
 ]
 
