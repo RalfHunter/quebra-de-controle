@@ -42,14 +42,15 @@ async function seedRoutePermissions() {
   const routes = await db
     .select({ id: Rota.id, route_path: Rota.route_path })
     .from(Rota)
-    .where(and(eq(Rota.method, "GET"), inArray(Rota.route_path, ["/security/users", "/security/users/:id"])))
+    .where(and(eq(Rota.method, "GET"), inArray(Rota.route_path, ["/security/users", "/security/users/:id", "/security/me"])))
 
   const admin = groups.find((group) => group.name === "admin")
   const basic = groups.find((group) => group.name === "basic")
   const usersWithoutId = routes.find((route) => route.route_path === "/security/users")
   const usersWithId = routes.find((route) => route.route_path === "/security/users/:id")
+  const meRoute = routes.find((route) => route.route_path === "/security/me")
 
-  if (!admin || !basic || !usersWithoutId || !usersWithId) {
+  if (!admin || !basic || !usersWithoutId || !usersWithId || !meRoute) {
     throw new Error("Nao foi possivel localizar grupos/rotas para vincular permissoes")
   }
 
@@ -58,7 +59,8 @@ async function seedRoutePermissions() {
     .values([
       { group_id: admin.id, route_id: usersWithoutId.id },
       { group_id: admin.id, route_id: usersWithId.id },
-      { group_id: basic.id, route_id: usersWithId.id }
+      { group_id: admin.id, route_id: meRoute.id },
+      { group_id: basic.id, route_id: meRoute.id }
     ])
     .onConflictDoNothing()
 

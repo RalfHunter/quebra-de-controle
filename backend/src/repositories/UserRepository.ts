@@ -7,12 +7,16 @@ import { UserUUID } from "../models/UserUUID.ts";
 import { eq } from "drizzle-orm";
 import type { TypeLogin } from "../utils/validatores/schemas/zod/AuthSchema.ts";
 import { email } from "zod";
+import { AppError } from "../utils/appError.ts";
 
 class UserRepository {
 
   async listUserSecurity(id?: string) {
     if (id) {
       const consulta = await db.select().from(UserUUID).where(eq(UserUUID.id, id))
+      if(consulta.length == 0) {
+        throw new AppError(`Usuário não encontrado`, 404)
+      }
       return consulta
     }
 
