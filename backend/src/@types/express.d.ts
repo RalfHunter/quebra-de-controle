@@ -4,7 +4,7 @@ import * as express from 'express';
 declare global {
   namespace Express {
     interface Request {
-      user_id?: string; // ou 'number', dependendo do seu ID
+      user_id?: string | number; // ou 'number', dependendo do seu ID
     }
   }
 }

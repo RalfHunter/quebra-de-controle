@@ -10,8 +10,8 @@ import { email } from "zod";
 
 class UserRepository {
 
-  async listUserSecurity(id?:string){
-    if(id) {
+  async listUserSecurity(id?: string) {
+    if (id) {
       const consulta = await db.select().from(UserUUID).where(eq(UserUUID.id, id))
       return consulta
     }
@@ -21,8 +21,8 @@ class UserRepository {
   }
 
 
-  async listUserNotSecurity(id?:number) {
-    if(id) {
+  async listUserNotSecurity(id?: number) {
+    if (id) {
       const consulta = await db.select().from(UserID).where(eq(UserID.id, id))
       return consulta
     }
@@ -45,47 +45,79 @@ class UserRepository {
     return user
   }
 
-  async updateUserSecurity(user:TypeUserUpdate, id:string) {
+  async updateUserSecurity(user: TypeUserUpdate, id: string) {
 
-    const updated = await db.update(UserUUID).set({...user}).where(eq(UserUUID.id, id)).returning()
+    const updated = await db.update(UserUUID).set({ ...user }).where(eq(UserUUID.id, id)).returning()
 
     return updated
   }
 
-  async updateUserNotSecurity(user:TypeUserUpdate, id:number) {
+  async updateUserNotSecurity(user: TypeUserUpdate, id: number) {
 
-    const updated = await db.update(UserID).set({...user}).where(eq(UserID.id, id)).returning()
+    const updated = await db.update(UserID).set({ ...user }).where(eq(UserID.id, id)).returning()
 
     return updated
 
   }
 
-  async deleteUserSecurity(id:string) {
+  async deleteUserSecurity(id: string) {
 
     const deleted = await db.delete(UserUUID).where(eq(UserUUID.id, id)).returning()
 
     return deleted
   }
 
-  async deleteUserNotSecurity(id:number) {
-    
+  async deleteUserNotSecurity(id: number) {
+
     const deleted = await db.delete(UserID).where(eq(UserID.id, id)).returning()
 
     return deleted
   }
 
-  async findForEmailAndPassword (email:string) {
-    const data = await db.select({email: UserUUID.email, password: UserUUID.password, id: UserUUID.id}).from(UserUUID).where(eq(UserUUID.email, email))
+  async findForEmailAndPassword(email: string) {
+    const data = await db.select({ email: UserUUID.email, password: UserUUID.password, id: UserUUID.id }).from(UserUUID).where(eq(UserUUID.email, email))
 
     return data[0]
   }
 
-  async findForUUID(id:string) {
+  async findForEmailAndPasswordNotSecurity(email: string) {
+    const data = await db.select({ email: UserID.email, password: UserID.password, id: UserID.id }).from(UserID).where(eq(UserID.email, email))
+
+    return data[0]
+  }
+
+  async findForUUID(id: string) {
     const data = await db.select().from(UserUUID).where(eq(UserUUID.id, id))
 
     return data
-  } 
+  }
 
+  async meSecurity(id: string) {
+    const data = await db.select({
+      nome: UserUUID.name,
+      data_nascimento: UserUUID.birth_date,
+      telefone: UserUUID.phone,
+      cpf: UserUUID.cpf,
+      email: UserUUID.email,
+      role: UserUUID.role
+    }).from(UserUUID).where(eq(UserUUID.id, id))
+
+    return data
+  }
+
+  async meNotSecurity(id: number) {
+    
+    const data = await db.select({
+      nome: UserID.name,
+      data_nascimento: UserID.birth_date,
+      telefone: UserID.phone,
+      cpf: UserID.cpf,
+      email: UserID.email,
+      role: UserID.role
+    }).from(UserID).where(eq(UserID.id, id))
+  
+  return data
+  }
 }
 
 export default UserRepository

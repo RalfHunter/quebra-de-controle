@@ -44,6 +44,42 @@ class AuthService {
 
         return body
     }
+    async loginNotSecurity(login:TypeLogin) {
+        const data = await this.userRepository.findForEmailAndPasswordNotSecurity(login.email)
+        if (!data) {
+            throw new AppError(`Email incorreto`, 404)
+        }
+        
+        const senha = await bcrypt.compare(login.password, data.password)
+        if (!senha) {
+            throw new AppError(`Senha incorreta`, 404)
+        }
+
+        
+        const header = {
+            id: data.id,
+        }
+
+        return header
+
+
+    }
+
+    async meSecurity(id:string) {
+    const data = await this.userRepository.meSecurity(id)
+
+    return data
+    }
+
+   async meNotSecurity(id:number) {
+    const data = await this.userRepository.meNotSecurity(id)
+    
+    if(!data) {
+        throw new AppError(`Usuário não encontrado`, 404)
+    }
+
+    return data
+    }
 }
 
 export default AuthService

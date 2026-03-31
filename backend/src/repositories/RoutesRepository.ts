@@ -67,6 +67,8 @@ class RoutesRepository {
         const created = await db.insert(Rotas_Grupos).values({ ...routeGroup }).returning()
         return created
     }
+
+
 }
 
 export default RoutesRepository
