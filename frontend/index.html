@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Rotas - Quebra de Controle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="kicker">Laboratorio de API</p>
+        <h1>Painel de Teste das Rotas do Backend</h1>
+        <p>
+          Frontend para validar manualmente as rotas ativas dos servidores em
+          <strong>3010</strong> e <strong>3011</strong>.
+        </p>
+      </header>
+
+      <section class="global-controls">
+        <label for="globalToken">Token Bearer global (opcional)</label>
+        <input id="globalToken" type="text" placeholder="Cole aqui um JWT para rotas com AuthMiddleware" />
+        <p class="tip">
+          Se o token for preenchido, ele sera enviado automaticamente no header
+          Authorization de todos os cards.
+        </p>
+      </section>
+
+      <section id="routesContainer" class="routes-grid" aria-live="polite"></section>
+    </main>
+
+    <template id="routeCardTemplate">
+      <article class="route-card is-collapsed">
+        <button class="route-toggle" type="button" aria-expanded="false">
+          <div class="route-head">
+            <span class="method-tag"></span>
+            <h2 class="route-title"></h2>
+          </div>
+          <span class="arrow" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="route-content hidden">
+          <div class="field">
+            <label>Descricao da rota</label>
+            <p class="description-text"></p>
+          </div>
+
+          <div class="field">
+            <label>URL da rota</label>
+            <input class="url-input" type="text" />
+          </div>
+
+          <div class="field body-field hidden">
+            <label>Body JSON (somente para metodos com body)</label>
+            <textarea class="body-input" rows="6"></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="run-btn" type="button">Enviar requisicao</button>
+            <span class="meta"></span>
+          </div>
+
+          <div class="field">
+            <label>Resposta recebida do servidor</label>
+            <pre class="response-output">Aguardando execucao...</pre>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
