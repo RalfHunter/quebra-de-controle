@@ -38,7 +38,7 @@ class DadosController {
             }
 
 
-            
+
             const dados = await fetch(parsedUrl.data.url, { headers: { "Accept": "application/vnd.github+json" } })
             const data = await dados.json()
             res.status(200).json(successResponse(data))
@@ -51,6 +51,33 @@ class DadosController {
             res.status(500).json(errorResponse(`Erro interno no servidor`, 500))
         }
     }
+
+    async getNotSecurity(req: Request, res: Response) {
+        try {
+
+            const url = req.query
+
+            const parsedUrl = urlSchema.safeParse(url)
+            if (!parsedUrl.success) {
+                return res.status(400).json(errorResponse(parsedUrl.error.issues.map(e => e.message).join(", "), 400))
+            }
+
+            const dados = await fetch(parsedUrl.data.url)
+            const texto = await dados.text()
+            // const data = await dados.json()
+
+            // res.type("te")
+            res.status(200).send(texto)
+
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json(errorResponse(error.message, error.statusCode))
+            }
+            console.log(error)
+            res.status(500).json(errorResponse(`Erro interno no servidor`, 500))
+        }
+    }
 }
+
 
 export default DadosController
