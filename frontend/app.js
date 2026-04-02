@@ -1,36 +1,55 @@
 const routes = [
   {
-    id: "security-login",
-    method: "POST",
-    path: "/security/login",
-    defaultUrl: "http://localhost:3010/security/login",
-    description:
-      "Login da area security. Espera JSON com email e senha e retorna token quando valido.",
-    defaultBody: {
-      email: "admin@email.com",
-      password: "123456"
-    }
-  },
-  
-  {
     id: "not-security-login",
     method: "POST",
     path: "/not-security/login",
     defaultUrl: "http://localhost:3010/not-security/login",
     description:
-      "O login atual se encaixa da CWE - 200 quando informações sensiveis são expostas a um agente não autorizado,",
+      "O login atual se encaixa da CWE - 200 quando informações sensíveis são expostas a um agente não autorizado, por exemplo a confirmação de um email, ajudando o atacante a descobrir emails válidos.",
     defaultBody: {
       email: "admin@email.com",
-      password: "123456"
+      password: "Senh@123"
     }
   },
-    {
+  {
+    id: "security-login",
+    method: "POST",
+    path: "/security/login",
+    defaultUrl: "http://localhost:3010/security/login",
+    description:
+      "O login atual resolve a falha de segurança do anterior, devolvendo uma mensagem de erro que não expõnha informações relevantes ao atacante.",
+    defaultBody: {
+      email: "admin@email.com",
+      password: "Senh@123"
+    }
+
+
+  },
+  {
+    id: "not-security-users",
+    method: "GET",
+    path: "/not-security/users",
+    defaultUrl: "http://localhost:3010/not-security/users",
+    description:
+      "Essa rota não possui autenticação por nivel de permissão, é uma rota exposta a qualquer um. CWE-862: Autorização ausente.",
+    defaultBody: null
+  },
+  {
+    id: "not-security-users-id",
+    method: "GET",
+    path: "/not-security/users/:id",
+    defaultUrl: "http://localhost:3010/security/users/1",
+    description:
+      "O mesmo caso anterior. só que dessa vez por usuário único",
+    defaultBody: null
+  },
+  {
     id: "security-users",
     method: "GET",
     path: "/security/users",
     defaultUrl: "http://localhost:3010/security/users",
     description:
-      "O login atual resolve a falha de segurança do anterior, devolvendo uma mensagem de erro que não expõnha informações relevantes ao atacante.",
+      "Essa rota é protegida por autenticação e nível de permissão usuário padrão não tem acesso a essa rotas.",
     defaultBody: null
   },
   {
@@ -39,25 +58,26 @@ const routes = [
     path: "/security/users/:id",
     defaultUrl: "http://localhost:3010/security/users/00000000-0000-0000-0000-000000000000",
     description:
-      "Busca usuario por UUID na area security. Trocar :id pelo UUID valido.",
+      "Essa rota é protegida por autenticação e nível de permissão usuário padrão não tem acesso a essa rotas.",
     defaultBody: null
   },
+  {
+    id: "not-security-me",
+    method: "GET",
+    path: "/not-security/me",
+    defaultUrl: "http://localhost:3010/security/me",
+    description:
+      "Essa rota obtém o id do usuário pelos headers, o id é exposto crualmente.",
+    defaultBody: null
+  },
+
   {
     id: "security-me",
     method: "GET",
     path: "/security/me",
     defaultUrl: "http://localhost:3010/security/me",
     description:
-      "Consulta o usuario autenticado da area security. Necessita Authorization Bearer.",
-    defaultBody: null
-  },
-    {
-    id: "not-security-me",
-    method: "GET",
-    path: "/not-security/me",
-    defaultUrl: "http://localhost:3010/not-security/me",
-    description:
-      "Consulta usuario na area sem seguranca. Usa middleware alternativo.",
+      "Essa rota usa token para obter o id. Logo se torna bem mais dificil adulterar o usuário.",
     defaultBody: null
   },
 
@@ -67,16 +87,25 @@ const routes = [
     path: "/security/dados?url=...",
     defaultUrl: "http://localhost:3010/security/dados?url=https://api.github.com/users/github",
     description:
-      "Endpoint SSRF com validacao de protocolo e host por allowlist.",
+      "Endpoint SSRF com validacao de protocolo e host por allowlist. Servidor válida se link fornecido está na allowlist.",
     defaultBody: null
   },
   {
-    id: "not-security-dados",
+    id: "not-security-dados-1",
     method: "GET",
     path: "/not-security/dados?url=...",
-    defaultUrl: "http://localhost:3010/not-security/dados?url=https://example.com",
+    defaultUrl: "http://localhost:3010/not-security/dados?url=http://localhost:8000/",
     description:
-      "Endpoint sem protecao forte para fetch remoto do parametro url.",
+      "Endpoint sem protecao forte para fetch remoto do parametro url, não válido url, podendo enviar requisição para quase qualquer lugar",
+    defaultBody: null
+  },
+    {
+    id: "not-security-dados-2",
+    method: "GET",
+    path: "/not-security/dados?url=...",
+    defaultUrl: "http://localhost:3011?url=http://localhost:3011/src/routes/ArquivoSecreto.json",
+    description:
+      "Endpoint sem protecao forte para fetch remoto do parametro url, não válido url, podendo enviar requisição para quase qualquer lugar",
     defaultBody: null
   }
 ];

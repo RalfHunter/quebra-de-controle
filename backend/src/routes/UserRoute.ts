@@ -10,4 +10,5 @@ const userController = new UserController()
 router.get("/users", AuthMiddleware, AuthPermission,userController.listUserSecurity.bind(userController))
 router.get("/users/:id", AuthMiddleware, AuthPermission, userController.listUserSecurity.bind(userController))
 
+
 export default router
