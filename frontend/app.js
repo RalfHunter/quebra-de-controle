@@ -67,7 +67,7 @@ const routes = [
     path: "/not-security/me",
     defaultUrl: "http://localhost:3010/not-security/me",
     description:
-      "Essa rota obtém o id do usuário pelos headers, o id é exposto crualmente.",
+      "Essa rota obtém o id do usuário pelos headers, o id é exposto cruelmente.",
     headerId: true,
     defaultBody: null
   },
