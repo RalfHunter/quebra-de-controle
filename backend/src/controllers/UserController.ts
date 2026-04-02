@@ -26,9 +26,9 @@ class UserController {
 
                 return res.status(200).json(successResponse(data))
             }
-            
+
             const data = await this.userService.listUserSecurity()
-            
+
             res.status(200).json(successResponse(data))
 
         }
@@ -44,14 +44,23 @@ class UserController {
         try {
 
             const id = req.params.id
-            const parsedId = UserSchemaID.pick({ id: true }).safeParse(id)
 
-            if (!parsedId.success) {
-                return res.status(400).json(errorResponse(parsedId.error.issues.map(e => e.message).join(", "), 400))
+
+            if (id) {
+                const parsedId = UserSchemaID.pick({ id: true }).safeParse({id:id})
+                if (!parsedId.success) {
+                    return res.status(400).json(errorResponse(parsedId.error.issues.map(e => e.message).join(", "), 400))
+                }
+                const data = await this.userService.listUserNotSecurity(parsedId.data.id)
+
+                return res.status(200).json(successResponse(data))
             }
-            const data = await this.userService.listUserNotSecurity(parsedId.data.id)
 
-            return data
+
+
+            const data = await this.userService.listUserNotSecurity()
+
+            res.status(200).json(successResponse(data))
 
         } catch (error: any) {
             if (error instanceof AppError) {

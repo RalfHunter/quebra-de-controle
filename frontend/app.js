@@ -7,7 +7,7 @@ const routes = [
     description:
       "O login atual se encaixa da CWE - 200 quando informações sensíveis são expostas a um agente não autorizado, por exemplo a confirmação de um email, ajudando o atacante a descobrir emails válidos.",
     defaultBody: {
-      email: "admin@email.com",
+      email: "admin@gmail.com",
       password: "Senh@123"
     }
   },
@@ -19,7 +19,7 @@ const routes = [
     description:
       "O login atual resolve a falha de segurança do anterior, devolvendo uma mensagem de erro que não expõnha informações relevantes ao atacante.",
     defaultBody: {
-      email: "admin@email.com",
+      email: "admin@gmail.com",
       password: "Senh@123"
     }
 
@@ -38,7 +38,7 @@ const routes = [
     id: "not-security-users-id",
     method: "GET",
     path: "/not-security/users/:id",
-    defaultUrl: "http://localhost:3010/security/users/1",
+    defaultUrl: "http://localhost:3010/not-security/users/1",
     description:
       "O mesmo caso anterior. só que dessa vez por usuário único",
     defaultBody: null
@@ -65,9 +65,10 @@ const routes = [
     id: "not-security-me",
     method: "GET",
     path: "/not-security/me",
-    defaultUrl: "http://localhost:3010/security/me",
+    defaultUrl: "http://localhost:3010/not-security/me",
     description:
       "Essa rota obtém o id do usuário pelos headers, o id é exposto crualmente.",
+    headerId: true,
     defaultBody: null
   },
 
@@ -85,9 +86,10 @@ const routes = [
     id: "security-dados",
     method: "GET",
     path: "/security/dados?url=...",
-    defaultUrl: "http://localhost:3010/security/dados?url=https://api.github.com/users/github",
+    defaultUrl: "http://localhost:3010/security/dados?url=https://raw.githubusercontent.com/Maujor/json/master/db.json",
     description:
-      "Endpoint SSRF com validacao de protocolo e host por allowlist. Servidor válida se link fornecido está na allowlist.",
+      `Endpoint SSRF com validacao de protocolo e host por allowlist. Servidor válida se link fornecido está na allowlist. \n
+      Link Bloqueado: https://raw.githubusercontent.com/RalfHunter/aluguel-de-equipamentos/105-implementar-testes-equipamentosroutes-nova/package.json`,
     defaultBody: null
   },
   {
@@ -96,7 +98,8 @@ const routes = [
     path: "/not-security/dados?url=...",
     defaultUrl: "http://localhost:3010/not-security/dados?url=http://localhost:8000/",
     description:
-      "Endpoint sem protecao forte para fetch remoto do parametro url, não válido url, podendo enviar requisição para quase qualquer lugar",
+      `Endpoint sem protecao forte para fetch remoto do parametro url, não válido url, podendo enviar requisição para quase qualquer lugar. \n
+      CWE-918: Falsificação de Requisição do Lado do Servidor`,
     defaultBody: null
   },
     {
@@ -105,7 +108,9 @@ const routes = [
     path: "/not-security/dados?url=...",
     defaultUrl: "http://localhost:3011?url=http://localhost:3011/src/routes/ArquivoSecreto.json",
     description:
-      "Endpoint sem protecao forte para fetch remoto do parametro url, não válido url, podendo enviar requisição para quase qualquer lugar",
+      `Endpoint sem protecao forte para fetch remoto do parametro url, não válido url, podendo enviar requisição para quase qualquer lugar. \n
+      CWE-918: Falsificação de Requisição do Lado do Servidor
+      `,
     defaultBody: null
   }
 ];
@@ -123,6 +128,8 @@ routes.forEach((route, index) => {
   const title = fragment.querySelector(".route-title");
   const descriptionText = fragment.querySelector(".description-text");
   const urlInput = fragment.querySelector(".url-input");
+  const headerIdField = fragment.querySelector(".header-id-field");
+  const headerIdInput = fragment.querySelector(".header-id-input");
   const bodyField = fragment.querySelector(".body-field");
   const bodyInput = fragment.querySelector(".body-input");
   const runBtn = fragment.querySelector(".run-btn");
@@ -135,6 +142,10 @@ routes.forEach((route, index) => {
   title.textContent = route.path;
   descriptionText.textContent = route.description;
   urlInput.value = route.defaultUrl;
+
+  if (route.headerId) {
+    headerIdField.classList.remove("hidden");
+  }
 
   toggleBtn.addEventListener("click", () => {
     const isCollapsed = card.classList.toggle("is-collapsed");
@@ -160,6 +171,10 @@ routes.forEach((route, index) => {
       headers.Authorization = token.startsWith("Bearer ")
         ? token
         : `Bearer ${token}`;
+    }
+
+    if (route.headerId) {
+      headers["x-user-id"] = headerIdInput.value.trim();
     }
 
     const options = {

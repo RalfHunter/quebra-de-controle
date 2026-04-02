@@ -20,36 +20,41 @@ app.listen(PORT, () => {
 })
 
 const server = http.createServer(async (req, res) => {
+    // Configuração global de cabeçalhos CORS
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    // Resposta imediata para a checagem do navegador (Preflight)
+    if (req.method === "OPTIONS") {
+        res.writeHead(204);
+        return res.end();
+    }
+
     try {
         const baseURL = `http://${req.headers.host}`;
         const myURL = new URL(req.url as string, baseURL);
 
-        // ROTA 1: Se a URL começar com /routes/, lemos o arquivo do disco
         if (myURL.pathname.startsWith('/src/routes/')) {
             const nomeArquivo = path.basename(myURL.pathname);
-            
-            // Ajustado para entrar em 'src/routes/' conforme sua estrutura
             const caminhoArquivo = path.join(process.cwd(), 'src', 'routes', nomeArquivo);
-            
-            console.log("Tentando ler arquivo em:", caminhoArquivo);
-
             const conteudo = await fs.readFile(caminhoArquivo, 'utf-8');
+            
             res.writeHead(200, { 'Content-Type': 'application/json' });
             return res.end(conteudo);
         }
 
-        // ROTA 2: O Proxy (sua lógica original corrigida)
         const urlAlvo = myURL.searchParams.get("url");
         if (urlAlvo) {
             const respostaFetch = await fetch(urlAlvo);
-            const data = await respostaFetch.json(); // Extraímos os dados aqui
+            const data = await respostaFetch.json();
             
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify(data)); // Enviamos 'data', não 'respostaFetch'
+            return res.end(JSON.stringify(data));
         }
 
         res.writeHead(404);
-        res.end("Rota não encontrada");
+        res.end(JSON.stringify({ error: "Rota não encontrada" }));
 
     } catch (error: any) {
         res.writeHead(500, { 'Content-Type': 'application/json' });

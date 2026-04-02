@@ -5,7 +5,7 @@ const router = Router()
 
 const userController = new UserController()
 
-router.get("/user", userController.listUserNotSecurity.bind(userController))
-router.get("/user/:id", userController.listUserNotSecurity.bind(userController))
+router.get("/users", userController.listUserNotSecurity.bind(userController))
+router.get("/users/:id", userController.listUserNotSecurity.bind(userController))
 
 export default router
