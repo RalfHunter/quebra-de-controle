@@ -22,7 +22,7 @@ class AuthService {
             throw new AppError(`Email ou senha incorretos`, 404)
         }
 
-        const senha = bcrypt.compare(login.password, data.password)
+        const senha = await bcrypt.compare(login.password, data.password)
         if (!senha) {
             throw new AppError(`Email ou senha incorretos`, 404)
         }
