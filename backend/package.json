@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev":"tsx watch server.ts",
+    "dev": "tsx watch server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "push": "npx drizzle-kit push",
     "seed:users": "tsx src/seeds/userSeed.ts",
@@ -23,6 +23,7 @@
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "libphonenumber-js": "^1.12.40",
     "pg": "^8.20.0",
